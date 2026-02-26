@@ -1,10 +1,29 @@
 const Database = require('better-sqlite3');
 const path = require('path');
+const fs = require('fs');
 const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 
-const dbPath = path.join(__dirname, '..', 'smartseat.db');
-const db = new Database(dbPath);
+const IS_VERCEL = process.env.VERCEL === '1' || !!process.env.VERCEL;
+const BUNDLED_DB_PATH = path.join(__dirname, '..', 'smartseat.db');
+const RUNTIME_DB_PATH = IS_VERCEL ? path.join('/tmp', 'smartseat.db') : BUNDLED_DB_PATH;
+
+// Vercel Self-Healing: Copy bundled DB to /tmp if it doesn't exist
+if (IS_VERCEL && !fs.existsSync(RUNTIME_DB_PATH)) {
+  try {
+    console.log('🔄 Vercel detected: Migrating bundled DB to /tmp...');
+    if (fs.existsSync(BUNDLED_DB_PATH)) {
+      fs.copyFileSync(BUNDLED_DB_PATH, RUNTIME_DB_PATH);
+      console.log('✅ Bundled DB copied to runtime path.');
+    } else {
+      console.log('⚠️ Bundled DB not found. A new one will be initialized.');
+    }
+  } catch (err) {
+    console.error('❌ Failed to copy database to /tmp:', err);
+  }
+}
+
+const db = new Database(RUNTIME_DB_PATH);
 
 // Enable WAL mode for better performance
 db.pragma('journal_mode = WAL');
@@ -135,4 +154,4 @@ function seedData() {
   console.log('   👤 Demo Batch2: demo2@smartseat.com / demo123');
 }
 
-module.exports = { db, initializeDatabase };
+module.exports = { db, initializeDatabase, RUNTIME_DB_PATH };
