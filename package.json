@@ -1,0 +1,8 @@
+{
+    "name": "smartseat-workspace",
+    "private": true,
+    "workspaces": [
+        "client",
+        "server"
+    ]
+}
