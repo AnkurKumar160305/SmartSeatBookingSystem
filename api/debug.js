@@ -1,7 +1,8 @@
-const { db } = require('../server/db/database');
+const { db, initializeDatabase } = require('../server/db/database');
 
 module.exports = (req, res) => {
     try {
+        initializeDatabase();
         const userCount = db.prepare('SELECT COUNT(*) as count FROM users').get();
         res.json({
             message: 'Debug endpoint is working!',

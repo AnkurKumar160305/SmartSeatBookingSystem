@@ -25,6 +25,17 @@ if (IS_VERCEL && !fs.existsSync(RUNTIME_DB_PATH)) {
 
 const db = new Database(RUNTIME_DB_PATH);
 
+// Auto-initialize on Vercel
+if (IS_VERCEL) {
+  process.nextTick(() => {
+    try {
+      initializeDatabase();
+    } catch (err) {
+      console.error('Failed to auto-initialize database:', err);
+    }
+  });
+}
+
 // Enable WAL mode for better performance
 db.pragma('journal_mode = WAL');
 db.pragma('foreign_keys = ON');
