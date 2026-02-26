@@ -25,15 +25,15 @@ if (IS_VERCEL && !fs.existsSync(RUNTIME_DB_PATH)) {
 
 const db = new Database(RUNTIME_DB_PATH);
 
-// Auto-initialize on Vercel
+// Auto-initialize on Vercel immediately (synchronous)
 if (IS_VERCEL) {
-  process.nextTick(() => {
-    try {
-      initializeDatabase();
-    } catch (err) {
-      console.error('Failed to auto-initialize database:', err);
-    }
-  });
+  try {
+    console.log('🚀 Synchronous initialization starting...');
+    initializeDatabase();
+    console.log('🚀 Synchronous initialization complete.');
+  } catch (err) {
+    console.error('❌ Failed to auto-initialize database:', err);
+  }
 }
 
 // Enable WAL mode for better performance
@@ -41,6 +41,7 @@ db.pragma('journal_mode = WAL');
 db.pragma('foreign_keys = ON');
 
 function initializeDatabase() {
+  console.log('📁 Checking tables...');
   // Create Users table
   db.exec(`
     CREATE TABLE IF NOT EXISTS users (
@@ -99,7 +100,7 @@ function initializeDatabase() {
     )
   `);
 
-  // Seed data
+  console.log('✅ Tables verified. Seeding data...');
   seedData();
 }
 
