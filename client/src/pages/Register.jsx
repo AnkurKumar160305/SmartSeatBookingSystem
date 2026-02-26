@@ -29,7 +29,10 @@ export default function Register() {
             toast.success('Registration successful! Please login.');
             navigate('/login');
         } catch (err) {
-            toast.error(err.response?.data?.error || 'Registration failed');
+            const msg = typeof err.response?.data?.error === 'string'
+                ? err.response.data.error
+                : 'Registration failed';
+            toast.error(msg);
         } finally {
             setLoading(false);
         }

@@ -24,7 +24,10 @@ export default function Login() {
             toast.success('Welcome back!');
             navigate('/dashboard');
         } catch (err) {
-            toast.error(err.response?.data?.error || 'Login failed');
+            const msg = typeof err.response?.data?.error === 'string'
+                ? err.response.data.error
+                : (typeof err.response?.data === 'string' ? err.response.data : 'Login failed');
+            toast.error(msg);
         } finally {
             setLoading(false);
         }
@@ -46,7 +49,10 @@ export default function Login() {
             toast.success('Signed in with Google!');
             navigate('/dashboard');
         } catch (err) {
-            toast.error(err.response?.data?.error || 'Google login failed');
+            const msg = typeof err.response?.data?.error === 'string'
+                ? err.response.data.error
+                : 'Google login failed';
+            toast.error(msg);
         } finally {
             setLoading(false);
         }
