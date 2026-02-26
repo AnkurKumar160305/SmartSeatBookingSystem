@@ -3,7 +3,12 @@
   "builds": [
     {
       "src": "server/index.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "server/smartseat.db"
+        ]
+      }
     },
     {
       "src": "client/package.json",
@@ -19,8 +24,12 @@
       "destination": "/server/index.js"
     },
     {
+      "source": "/assets/(.*)",
+      "destination": "/client/assets/$1"
+    },
+    {
       "source": "/(.*)",
-      "destination": "/client/$1"
+      "destination": "/client/index.html"
     }
   ]
 }
