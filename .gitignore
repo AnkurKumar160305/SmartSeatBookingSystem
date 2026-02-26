@@ -1,0 +1,10 @@
+node_modules
+.env
+dist
+.vscode
+.DS_Store
+*.db-shm
+*.db-wal
+build
+.vercel
+smartseat.db
