@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 
 const IS_VERCEL = process.env.VERCEL === '1' || !!process.env.VERCEL;
-const BUNDLED_DB_PATH = path.join(__dirname, '..', 'smartseat.db');
+const BUNDLED_DB_PATH = path.join(process.cwd(), 'server', 'smartseat.db');
 const RUNTIME_DB_PATH = IS_VERCEL ? path.join('/tmp', 'smartseat.db') : BUNDLED_DB_PATH;
 
 // Vercel Self-Healing: Copy bundled DB to /tmp if it doesn't exist
